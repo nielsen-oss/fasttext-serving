@@ -92,6 +92,8 @@ git clone https://github.com/nielsen-oss/fasttext-serving
 cd fasttext-serving
 python3 -m venv venv
 source venv/bin/activate
+export SERVICE_CONFIG_PATH="sample/config.yaml"
+python3 -m fts
 ```
 
 And do not forget to pass the tests and add yours:
