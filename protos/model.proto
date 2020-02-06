@@ -1,0 +1,52 @@
+// Copyright 2020 Nielsen Global Connect.
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+// The specifications of a FastText model
+message ModelSpec {
+    string name = 1;
+    string base_path = 2;
+    int64 version = 3;
+}
+
+// The current status of a FastText model
+message ModelStatus {
+    // State of the model
+    enum ModelState {
+        // The model is not in the configuration of models loaded
+        UNKNOWN = 0;
+        // The model is ready to make predictions as it is being served by the service
+        LOADED = 1;
+        // The model is defined but it is not loaded due to resource constraints
+        AVAILABLE = 2;
+        // The model cannot be loaded due to an errors
+        FAILED = 3;
+    }
+    ModelState state = 1;
+    int64 version = 2;
+}
+
+// A prediction made for a text string
+message Prediction {
+    // The list of labels to identify the class / category
+    repeated string labels = 1;
+    // The list of scores assigned to each label
+    repeated float scores = 2;
+}
+
+// The vector of a word
+message WordVector {
+    repeated float element = 1;
+}

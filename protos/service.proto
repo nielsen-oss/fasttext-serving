@@ -1,0 +1,100 @@
+// Copyright 2020 Nielsen Global Connect.
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+import "model.proto";
+
+// Endpoints of the FastText Serving interface
+service FastText {
+
+    // Load a list of models
+    rpc LoadModels(LoadModelsRequest) returns (LoadModelsResponse);
+
+    // Get the list of models served by the model
+    rpc GetLoadedModels (LoadedModelsRequest) returns (LoadedModelsResponse);
+
+    // Get the status of a specific model model
+    rpc GetModelStatus (ModelStatusRequest) returns (ModelStatusResponse);
+
+    // Reload model config file
+    rpc ReloadConfigModels (ReloadModelsRequest) returns (ReloadModelsResponse);
+
+    // Get a prediction performed by a model
+    rpc Predict (PredictRequest) returns (PredictResponse);
+
+    // Get words vectors from the model
+    rpc GetWordsVectors (VectorsRequest) returns (VectorsResponse);
+
+}
+
+message LoadModelsRequest {
+    repeated ModelSpec models = 1;
+}
+
+message LoadModelsResponse {
+    bool success = 1;
+}
+
+message LoadedModelsRequest {
+}
+
+message LoadedModelsResponse {
+    repeated ModelSpec models = 1;
+}
+
+message ModelStatusRequest {
+    ModelSpec model = 1;
+}
+
+message ModelStatusResponse {
+    ModelStatus status = 1;
+}
+
+message ReloadModelsRequest {
+}
+
+message ReloadModelsResponse {
+    bool success = 1;
+}
+
+message PredictRequest {
+    // The name or ID of the model to use
+    string model_name = 1;
+    // A batch with a set of sentences to predict
+    repeated string batch = 2;
+    // Top K labels will be returned for each prediction
+    int32 k = 3;
+}
+
+message PredictResponse {
+    // A set of predictions, one for each element in the batch
+    repeated Prediction predictions = 1;
+    // The specification of the model used for inference
+    ModelSpec model = 2;
+}
+
+message VectorsRequest{
+    // The name or ID of the model to use
+    string model_name = 1;
+    // A batch with a set of words to obtain their vectors
+    repeated string batch = 2;
+}
+
+message VectorsResponse{
+    // A set of vectors, one for each word in the batch
+    repeated WordVector vectors = 1;
+    // The specification of the model used to get vectors
+    ModelSpec model = 2;
+}

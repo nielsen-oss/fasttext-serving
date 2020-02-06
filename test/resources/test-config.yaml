@@ -1,0 +1,24 @@
+grpc:
+  port: 50051
+  max_workers: 10
+  maximum_concurrent_rpcs: 100
+  channel_options:
+    max_send_message_length: 59430547
+    max_receive_message_length: 59430547
+    max_connection_age_ms: 10000
+    max_connection_age_grace_ms: 6000000
+    lb_policy_name: round_robin
+
+logging_level: INFO
+
+memory:
+  available_memory: 7000000 # bytes
+  memory_factor: 1.0 # model memory size/disk size
+
+# MODELS
+models_path: "test/resources/models"
+models:
+  - name: correct
+  - name: corrupt
+  - name: heavy
+  - name: bad_path

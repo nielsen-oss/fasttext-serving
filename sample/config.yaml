@@ -1,0 +1,22 @@
+grpc:
+  port: 50051
+  max_workers: 5
+  maximum_concurrent_rpcs: 100
+  channel_options:
+    max_send_message_length: 59430547
+    max_receive_message_length: 59430547
+    max_connection_age_ms: 10000
+    max_connection_age_grace_ms: 6000000
+    lb_policy_name: round_robin
+
+logging_level: INFO
+
+memory:
+  available_memory: 4000000 # bytes
+  memory_factor: 1.2 # model memory size/disk size
+
+# List of models to serve
+models_path: /models
+models:
+  - base_path: yelp_review_polarity
+    name: yelp_review_polarity

@@ -1,0 +1,6 @@
+PyYAML==5.3
+grpcio==1.26.0
+grpcio-tools==1.26.0
+grpcio-health-checking==1.26.0
+watchdog==0.10.1
+fasttext==0.9.1
