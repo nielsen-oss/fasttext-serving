@@ -1,10 +1,10 @@
 # FastText Serving
 
-FastText Serving is a simple and efficient serving system for [fastText](https://fasttext.cc) models. Inspired by TensorFlow Serving, it provides the missing piece in the microservice puzzle to connect your business logic with basic Natural Language Processing (NLP). The idea of this project is to provide an elegant and reusable implementation for managing several fastText models, allowing to run concurrent multimodel predictions. The API of the service is based on gRPC to reduce network latency and deliver higher throughput. For instance, you can run millions of predictions in around one seconds using just a single CPU.
+FastText Serving is a simple and efficient serving system for [fastText](https://fasttext.cc) models. Inspired by TensorFlow Serving, it provides the missing piece in the microservice puzzle to connect your business logic with basic Natural Language Processing (NLP). The idea of this project is to provide an elegant and reusable implementation for managing several fastText models, allowing to run concurrent multi model predictions. The API of the service is based on gRPC to reduce network latency and deliver higher throughput. For instance, you can run millions of predictions in around one seconds using just a single CPU.
 
-The service has been developed in Python, making use of Facebook's fastText library for running predictions over text pieces (words, sentences, paragrpahs, etc.). The fastText API is used through the Python bindings provided in the official project. Clients of the service can boost their performance by sending multiple sentences grouped in batches within the same request as the fastText library is compiled as a binary.
+The service has been developed in Python, making use of Facebook's fastText library for running predictions over text pieces (words, sentences, paragraphs, etc.). The fastText API is used through the Python bindings provided in the official project. Clients of the service can boost their performance by sending multiple sentences grouped in batches within the same request as the fastText library is compiled as a binary.
 
-Serving models are determined by reading the contents of a [configuration file](samples/config.yaml). These models are cached in memory depending on the ammount of memory available and the size of the model. Every request is dispatched to the model specified in the body of that request. In addition, models are reloaded when a newer version is published or the file contents are changed in disk, thanks to the [watchdog](https://github.com/gorakhargosh/watchdog) library.
+Serving models are determined by reading the contents of a [configuration file](sample/config.yaml). These models are cached in memory depending on the amount of memory available and the size of the model. Every request is dispatched to the model specified in the body of that request. In addition, models are reloaded when a newer version is published or the file contents are changed in disk, thanks to the [watchdog](https://github.com/gorakhargosh/watchdog) library.
 
 ## Features
 
@@ -51,7 +51,7 @@ python3 sample/client.py
 
 ### API
 
-The gRPC API exposes a set of methods for performing performing model management and predictions with fastText. More especifically, the service provides this functionalities:
+The gRPC API exposes a set of methods for performing model management and predictions with fastText. More specifically, the service provides this functionalities:
 
   - Classify a sentence
   - Get the words vectors of a set of words
@@ -64,18 +64,19 @@ The gRPC API exposes a set of methods for performing performing model management
     - *AVAILABLE*: The model is defined but not loaded, due to resource constraints
     - *FAILED*: The model is not loaded due to a different internal error
   
-The complete espcification can be found in the protocol buffer definition in the [protos](protos) directory.
+The complete specification can be found in the protocol buffer definition in the [protos](protos) directory.
 
 ## Troubleshooting
 
-  * Newer version of the model are not noaded.
+  * Newer versions of the model are not loaded.
 
-    Check that the model extension is right and the path where the file has been uploaded.
+    Check that the model extension is .ftx or .bin and the path where the file has been uploaded is right.
+    Also review your [config file](sample/config.yaml) to check that the model is listed in the *models* section
 
-  * Concurrent predictions are really slow.
+  * Predictions are too slow.
 
     Send all the predictions to the same model in bigger batches.
-    Increase the maximum number of concurrent workers in the service configuration.
+    Increase the maximum number of concurrent workers in the [service configuration](sample/config.yaml).
 
 ## Contact
 
