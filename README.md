@@ -1,6 +1,6 @@
 # FastText Serving
 
-FastText Serving is a simple and efficient serving system for [fastText](https://fasttext.cc) models. Inspired by TensorFlow Serving, it provides the missing piece in the microservice puzzle to connect your business logic with basic Natural Language Processing (NLP). The idea of this project is to provide an elegant and reusable implementation for managing several fastText models, allowing to run concurrent multi model predictions. The API of the service is based on gRPC to reduce network latency and deliver higher throughput. For instance, you can run millions of predictions in around one seconds using just a single CPU.
+FastText Serving is a simple and efficient serving system for [fastText](https://fasttext.cc) models. Inspired by TensorFlow Serving, it provides the missing piece in the microservice puzzle to connect your business logic with basic Natural Language Processing (NLP). The idea of this project is to provide an elegant and reusable implementation for managing several fastText models, allowing to run concurrent multi model predictions. The API of the service is based on gRPC to reduce network latency and deliver higher throughput. For instance, you can run millions of predictions in around one second using just a single CPU.
 
 The service has been developed in Python, making use of Facebook's fastText library for running predictions over text pieces (words, sentences, paragraphs, etc.). The fastText API is used through the Python bindings provided in the official project. Clients of the service can boost their performance by sending multiple sentences grouped in batches within the same request as the fastText library is compiled as a binary.
 
@@ -70,7 +70,7 @@ The complete specification can be found in the protocol buffer definition in the
 
   * Newer versions of the model are not loaded.
 
-    Check that the model extension is .ftx or .bin and the path where the file has been uploaded is right.
+    Check that the model has the extension .ftz or .bin and the path where the file has been uploaded.
     Also review your [config file](sample/config.yaml) to check that the model is listed in the *models* section
 
   * Predictions are too slow.
