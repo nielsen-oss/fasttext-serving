@@ -1,4 +1,4 @@
-PyYAML==5.3
+PyYAML==5.4
 grpcio==1.26.0
 grpcio-tools==1.26.0
 grpcio-health-checking==1.26.0
