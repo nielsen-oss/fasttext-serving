@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from pathlib import Path
 from shutil import copytree, rmtree
 from test.test_utils import FastTextServingTest
 
 import grpc
+import yaml
 from fts.protos import model_pb2, service_pb2
 from fts.utils.config import get_config
 
@@ -163,6 +165,31 @@ class TestModelLoading(FastTextServingTest):
         self.assertTrue(
             model_pb2.ModelStatus.ModelState.Name(response.status.state) == "LOADED"
         )
+        self.revert_model_changes()
+
+    def test_reloading_new_model(self):
+
+        # Configure a new model
+        config_path = os.environ["SERVICE_CONFIG_PATH"]
+        with open(config_path, "r+") as f:
+            config = yaml.load(f.read())
+            config["models"].append({"base_path": "new", "name": "new"})
+            yaml.dump(config, f)
+
+        # Make the new model available and reload models
+        self.duplicate_correct_model()
+
+        # Check that the new model is loaded
+        request = service_pb2.ModelStatusRequest(
+            model=model_pb2.ModelSpec(name="new")
+        )
+        response = self.stub.GetModelStatus(request)
+        self.assertTrue(
+            model_pb2.ModelStatus.ModelState.Name(response.status.state) == "LOADED"
+        )
+
+        # Revert changes
+        self.revert_config_changes()
         self.revert_model_changes()
 
 

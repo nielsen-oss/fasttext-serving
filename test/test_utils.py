@@ -19,7 +19,7 @@ import unittest
 from concurrent import futures
 from pathlib import Path
 from threading import Thread
-from shutil import copytree, rmtree
+from shutil import copy, copytree, rmtree
 
 from fts.protos import service_pb2, service_pb2_grpc
 from fts.server import FastTextServicer
@@ -55,8 +55,11 @@ class FastTextServingTest(unittest.TestCase):
     CORRECT_MODEL_PATH = MODELS_DIR / "correct"
     HEAVY_MODEL_PATH = MODELS_DIR / "heavy"
     CORRUPT_MODEL_PATH = MODELS_DIR / "corrupt"
+    NEW_MODEL_PATH = MODELS_DIR / "new"
     BAD_PATH = MODELS_DIR / "bad_path"
     BAD_MODELS = ["heavy", "corrupt", "bad_path"]
+    CONFIG_PATH = os.environ["SERVICE_CONFIG_PATH"]
+    CONFIG_BACKUP_PATH = Path("test/resources/config-backup.yaml")
 
     @classmethod
     def setUpClass(cls):
@@ -69,6 +72,7 @@ class FastTextServingTest(unittest.TestCase):
         cls._channel = grpc.insecure_channel("localhost:50051")
         cls.stub = service_pb2_grpc.FastTextStub(cls._channel)
         cls.backup_model_changes()
+        cls.backup_config_file()
 
     @classmethod
     def tearDownClass(cls):
@@ -84,6 +88,12 @@ class FastTextServingTest(unittest.TestCase):
         rmtree(cls.HEAVY_MODEL_PATH)
         copytree(cls.CORRECT_MODEL_PATH, cls.HEAVY_MODEL_PATH)
         cls.stub.ReloadConfigModels(service_pb2.ReloadModelsRequest())
+    
+    @classmethod
+    def duplicate_correct_model(cls):
+        cls.backup_model_changes()
+        copytree(cls.CORRECT_MODEL_PATH, cls.NEW_MODEL_PATH)
+        cls.stub.ReloadConfigModels(service_pb2.ReloadModelsRequest())
 
     @classmethod
     def revert_model_changes(cls):
@@ -95,3 +105,15 @@ class FastTextServingTest(unittest.TestCase):
     def backup_model_changes(cls):
         rmtree(cls.MODELS_BACKUP_DIR, ignore_errors=True)
         copytree(cls.MODELS_DIR, cls.MODELS_BACKUP_DIR)
+
+    @classmethod
+    def backup_config_file(cls):
+        if os.path.exists(cls.CONFIG_BACKUP_PATH):
+            os.remove(cls.CONFIG_BACKUP_PATH)
+        copy(cls.CONFIG_PATH, cls.CONFIG_BACKUP_PATH)
+
+    @classmethod
+    def revert_config_changes(cls):
+        os.remove(cls.CONFIG_PATH)
+        copy(cls.CONFIG_BACKUP_PATH, cls.CONFIG_PATH)
+        cls.stub.ReloadConfigModels(service_pb2.ReloadModelsRequest())

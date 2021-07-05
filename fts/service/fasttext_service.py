@@ -25,7 +25,7 @@ from fts.service.exceptions import (
     ModelNotLoadedException,
 )
 from fts.protos import model_pb2, service_pb2
-from fts.utils.config import get_config
+from fts.utils.config import get_config, load_config
 from fts.utils.logger import get_logger
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -283,6 +283,7 @@ class FastTextService(object):
     @staticmethod
     def _get_models_from_config():
         configured_models = {}
+        config = load_config()
         for model in config["models"]:
             try:
                 model_base_path = "/".join([config["models_path"], model["base_path"]])
