@@ -22,7 +22,7 @@ def load_config():
     global config
     with open(os.environ["SERVICE_CONFIG_PATH"], "r") as stream:
         config = yaml.safe_load(stream)
-
+    return config
 
 def get_config():
     if config is None:
