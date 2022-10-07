@@ -43,7 +43,7 @@ wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/dbpedia.ftz -P sa
 pip3 install -r requirements.txt
 
 # Compile protocol buffers (required by the client)
-python3 setup.py install
+pip3 install .
 
 # Make predictions using the example client
 python3 sample/client.py
