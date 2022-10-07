@@ -28,7 +28,8 @@ class BuildProtos(install):
     """
 
     def run(self):
-        Path("fts/protos/").mkdir()
+        install.run(self)
+        Path("fts/protos/").mkdir(exist_ok=True)
         protoc.main(
             [
                 "protoc",
@@ -54,9 +55,8 @@ class BuildProtos(install):
 
 setup(
     name="fasttext-serving",
-    description="TODO",
-    url="TODO",
+    description="A fast multi-model fastText serving",
     version="1.0.0",
-    cmdclass={"install": BuildProtos,},
+    cmdclass={"install": BuildProtos},
     packages=find_packages(include=["fts*"]),
 )
