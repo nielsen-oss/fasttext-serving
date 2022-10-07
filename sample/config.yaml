@@ -16,7 +16,7 @@ memory:
   memory_factor: 1.2 # model memory size/disk size
 
 # List of models to serve
-models_path: sample/models
+models_path: /models
 models:
   - base_path: yelp_review_polarity
     name: yelp_review_polarity
